@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- namespace必须指向Dao接口 -->
+<mapper namespace="com.bdqn.dao.CodeDao">
+	<resultMap id="codeMap" type="com.bdqn.entity.Code">
+		<id property="id" column="id" />
+		<result property="code" column="code" />
+		<result property="codename" column="codeName" />
+		<result property="codetypename" column="codeTypeName" />
+		<result property="parcode" column="parCode" />
+		<result property="sequencenum" column="sequenceNum" />
+		<result property="createdby" column="createdBy" />
+		<result property="creationdate" column="creationDate" />
+		<result property="modifyby" column="modifyBy" />
+		<result property="modifydate" column="modifyDate" />
+	</resultMap>
+	
+	<!-- 根据Id查询 -->
+	<select id="getById" parameterType="int" resultMap="codeMap">
+		select * from t_code where id=#{id}
+	</select>
+	
+	<!-- 查询所有 -->
+	<select id="getAll" resultMap="codeMap">
+		select * from t_code 
+	</select>
+
+	
+	<!-- 查询 -->
+	<select id="searchPage" parameterType="map" resultMap="codeMap">
+		select * from t_code t 
+		order by id DESC 
+		LIMIT #{pageStart},#{pageSize}
+	</select>
+	
+	<!-- 查询总数 -->
+	<select id="searchCount" parameterType="map" resultType="Long">
+		select count(1) from  t_code t 
+	</select>
+
+	<!-- 保存 -->
+	<insert id="save" parameterType="com.bdqn.entity.Code" useGeneratedKeys="true" keyProperty="id">
+		insert into t_code (
+			id,code,codeName,codeTypeName,parCode,sequenceNum,createdBy,creationDate,modifyBy,modifyDate)
+		values (
+			#{id},#{code},#{codename},#{codetypename},#{parcode},#{sequencenum},#{createdby},#{creationdate},#{modifyby},#{modifydate})
+	</insert>
+	
+	<!-- 更新 -->
+	<update id="update" parameterType="com.bdqn.entity.Code">
+		update t_code t set 
+			t.id=#{id} 
+			<if test="id != null">
+			,id=#{id}
+			</if>
+			<if test="code != null and code != '' ">
+			,code=#{code}
+			</if>
+			<if test="codename != null and codename != '' ">
+			,codeName=#{codename}
+			</if>
+			<if test="codetypename != null and codetypename != '' ">
+			,codeTypeName=#{codetypename}
+			</if>
+			<if test="parcode != null and parcode != '' ">
+			,parCode=#{parcode}
+			</if>
+			<if test="sequencenum != null">
+			,sequenceNum=#{sequencenum}
+			</if>
+			<if test="createdby != null and createdby != '' ">
+			,createdBy=#{createdby}
+			</if>
+			<if test="creationdate != null">
+			,creationDate=#{creationdate}
+			</if>
+			<if test="modifyby != null and modifyby != '' ">
+			,modifyBy=#{modifyby}
+			</if>
+			<if test="modifydate != null">
+			,modifyDate=#{modifydate}
+			</if>
+		where t.id=#{id}
+	</update>
+	
+	<!-- 删除 -->
+	<delete id="delete" parameterType="long">
+	     update t_code set deleted=0 where id=#{id}
+	</delete>
+
+</mapper>

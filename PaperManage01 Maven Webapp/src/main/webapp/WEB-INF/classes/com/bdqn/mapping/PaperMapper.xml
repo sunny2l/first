@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- namespace必须指向Dao接口 -->
+<mapper namespace="com.bdqn.dao.PaperDao">
+	<resultMap id="paperMap" type="com.bdqn.entity.Paper">
+		<id property="id" column="id" />
+		<result property="title" column="title" />
+		<result property="type" column="type" />
+		<result property="papersummary" column="paperSummary" />
+		<result property="paperpath" column="paperPath" />
+		<result property="createdby" column="createdBy" />
+		<result property="creationdate" column="creationDate" />
+		<result property="modifyby" column="modifyBy" />
+		<result property="modifydate" column="modifyDate" />
+		<result property="filename" column="fileName" />
+	</resultMap>
+	
+	<!-- 根据Id查询 -->
+	<select id="getById" parameterType="int" resultMap="paperMap">
+		select * from t_paper where id=#{id}
+	</select>
+	
+	<!-- 查询所有 -->
+	<select id="getAll" resultMap="paperMap">
+		select * from t_paper 
+	</select>
+
+	
+	<!-- 查询 -->
+	<select id="searchPage" parameterType="map" resultMap="paperMap">
+		select * from t_paper t 
+		order by id DESC 
+		LIMIT #{pageStart},#{pageSize}
+	</select>
+	
+	<!-- 查询总数 -->
+	<select id="searchCount" parameterType="map" resultType="Long">
+		select count(1) from  t_paper t 
+	</select>
+
+	<!-- 保存 -->
+	<insert id="save" parameterType="com.bdqn.entity.Paper" useGeneratedKeys="true" keyProperty="id">
+		insert into t_paper (
+			id,title,type,paperSummary,paperPath,createdBy,creationDate,modifyBy,modifyDate,fileName)
+		values (
+			#{id},#{title},#{type},#{papersummary},#{paperpath},#{createdby},#{creationdate},#{modifyby},#{modifydate},#{filename})
+	</insert>
+	
+	<!-- 更新 -->
+	<update id="update" parameterType="com.bdqn.entity.Paper">
+		update t_paper t set 
+			t.id=#{id} 
+			<if test="id != null">
+			,id=#{id}
+			</if>
+			<if test="title != null and title != '' ">
+			,title=#{title}
+			</if>
+			<if test="type != null">
+			,type=#{type}
+			</if>
+			<if test="papersummary != null and papersummary != '' ">
+			,paperSummary=#{papersummary}
+			</if>
+			<if test="paperpath != null and paperpath != '' ">
+			,paperPath=#{paperpath}
+			</if>
+			<if test="createdby != null and createdby != '' ">
+			,createdBy=#{createdby}
+			</if>
+			<if test="creationdate != null">
+			,creationDate=#{creationdate}
+			</if>
+			<if test="modifyby != null and modifyby != '' ">
+			,modifyBy=#{modifyby}
+			</if>
+			<if test="modifydate != null">
+			,modifyDate=#{modifydate}
+			</if>
+			<if test="filename != null and filename != '' ">
+			,fileName=#{filename}
+			</if>
+		where t.id=#{id}
+	</update>
+	
+	<!-- 删除 -->
+	<delete id="delete" parameterType="long">
+	     update t_paper set deleted=0 where id=#{id}
+	</delete>
+
+</mapper>
